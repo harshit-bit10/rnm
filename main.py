@@ -107,7 +107,7 @@ async def handle_private_message(client, message):
 async def handle_group_message(client: Client, message) -> None:
     user_id = message.from_user.id  # Get the user ID of the sender
     username = message.from_user.username if message.from_user.username else "N/A"  # Get the username, if available
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get the current time
+#    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get the current time
 
     # Check if the message is from a specific group
     if message.chat.id != Config.CHAT_ID:
@@ -123,7 +123,7 @@ async def handle_group_message(client: Client, message) -> None:
                     chat_id=Config.OWNER_ID,
                     text=(
                         "<i>Unauthorized group has accessed your bot and its commands, here are its full details:</i>\n\n"
-                        f"<b>Timestamp:</b> <code>{timestamp}</code>\n"
+                  #      f"<b>Timestamp:</b> <code>{timestamp}</code>\n"
                         f"<b>Group Name:</b> <code>{message.chat.title}</code>\n"
                         f"<b>Group ID:</b> <code>{message.chat.id}</code>\n"
                         f"<b>User:</b> <code>{message.from_user.first_name} {message.from_user.last_name if message.from_user.last_name else ''}</code>\n"
@@ -133,7 +133,7 @@ async def handle_group_message(client: Client, message) -> None:
                         f"<b>Message Type:</b> <code>{message.chat.type}</code>\n"
                         f"<b>Command / Message:</b> <code>{message.text}</code>\n"
                         f"<b>Message ID:</b> <code>{message.id}</code>\n"
-                        f"<b>Message Date:</b> <code>{message.date.strftime('%Y-%m-%d %H:%M:%S')}</code>\n"  # Message date
+               #         f"<b>Message Date:</b> <code>{message.date.strftime('%Y-%m-%d %H:%M:%S')}</code>\n"  # Message date
                         f"<b>User Profile Photo:</b> <code>{message.from_user.photo.small_file_id if message.from_user.photo else 'No photo available'}</code>\n"  # User profile photo
                     )
                 )
