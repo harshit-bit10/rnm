@@ -100,7 +100,7 @@ async def handle_private_message(client, message):
     if message.text.startswith("/"):
         # If the command is /jl, handle it
         if message.text.startswith("/rm"):
-            await download_video(client, message)  # Call the main_func to handle the /jl command
+            await rm_command(client, message)  # Call the main_func to handle the /jl command
             return
 
 @app.on_message(filters.group)  # Only respond to group messages
@@ -153,7 +153,7 @@ async def handle_group_message(client: Client, message) -> None:
     if message.text.startswith("/"):
         # If the command is /jl, handle it
         if message.text.startswith("/rm"):
-            await download_video(client, message)  # Call the main_func to handle the /jl command
+            await rm_command(client, message)  # Call the main_func to handle the /jl command
             return
 
     # If the user sends any other message, you can choose to ignore it or respond accordingly
