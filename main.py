@@ -30,7 +30,7 @@ app = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 dump_chat_id = [-1002368843413]
 
 # Define authorized users and groups
-sudo_users = {6066102279}  # Replace with actual user IDs for PM Access
+sudo_users = {6066102279, 5574593875}  # Replace with actual user IDs for PM Access
 sudo_groups = {-1002337988665}  # Replace with actual group chat IDs For Group Chat Access
 
 OWNER_ID = 6066102279
@@ -82,94 +82,9 @@ def sudo_only(func):
 async def start(client, message):
     await message.reply_text("Welcome to SharkToonsIndia Bot! Send me an audio, video, or subtitle file, and I'll add metadata to it.")
 
-@app.on_message(filters.private)  # Only respond to private messages
-async def handle_private_message(client, message):
-    user_id = message.from_user.id  # Get the user ID of the sender
 
-    # Check if the user is authorized
-    if user_id not in Config.PM_AUTH_USERS:
-        # Send a message if the user is not authorized
-        await message.reply(
-            "<code>Hey Dude, seems like master hasn't given you access to use me.\n"
-            "Please contact him immediately at</code> <b> @SupremeYoriichi</b>",
-        )
-        return  # Exit the function if the user is not authorized
-
-    # Authorized users can use the bot normally
-    # Check if the message is a command
-    if message.text.startswith("/"):
-        # If the command is /jl, handle it
-        if message.text.startswith("/rm"):
-            await rm_command(client, message)  # Call the main_func to handle the /jl command
-            return
-
-@app.on_message(filters.group)  # Only respond to group messages
-async def handle_group_message(client: Client, message) -> None:
-    user_id = message.from_user.id  # Get the user ID of the sender
-    username = message.from_user.username if message.from_user.username else "N/A"  # Get the username, if available
-#    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get the current time
-
-    # Check if the message is from a specific group
-    if message.chat.id != Config.CHAT_ID:
-        # Check if the message is a specific command
-        unauthorized_commands = ["/rm", "/settings", "/another_command", "/yet_another_command"]
-        if any(message.text.startswith(cmd) for cmd in unauthorized_commands):
-            await message.reply(
-                "<code>This bot is not authorized to respond in this group. Contact @SupremeYoriichi now.</code>"
-            )
-            
-            try:
-                await client.send_message(
-                    chat_id=Config.OWNER_ID,
-                    text=(
-                        "<i>Unauthorized group has accessed your bot and its commands, here are its full details:</i>\n\n"
-                  #      f"<b>Timestamp:</b> <code>{timestamp}</code>\n"
-                        f"<b>Group Name:</b> <code>{message.chat.title}</code>\n"
-                        f"<b>Group ID:</b> <code>{message.chat.id}</code>\n"
-                        f"<b>User:</b> <code>{message.from_user.first_name} {message.from_user.last_name if message.from_user.last_name else ''}</code>\n"
-                        f"<b>Username:</b> <code>@{username}</code>\n"
-                        f"<b>User ID:</b> <code>{user_id}</code>\n"
-                        f"<b>Language Code:</b> <code>{message.from_user.language_code if message.from_user.language_code else 'N/A'}</code>\n"
-                        f"<b>Message Type:</b> <code>{message.chat.type}</code>\n"
-                        f"<b>Command / Message:</b> <code>{message.text}</code>\n"
-                        f"<b>Message ID:</b> <code>{message.id}</code>\n"
-               #         f"<b>Message Date:</b> <code>{message.date.strftime('%Y-%m-%d %H:%M:%S')}</code>\n"  # Message date
-                        f"<b>User Profile Photo:</b> <code>{message.from_user.photo.small_file_id if message.from_user.photo else 'No photo available'}</code>\n"  # User profile photo
-                    )
-                )
-                print(
-                    f"Sent unauthorized command details to owner: {Config.OWNER_ID} "
-                    f"for the message/command '{message.text}' from user '{message.from_user.first_name} {message.from_user.last_name if message.from_user.last_name else ''}' "
-                    f"(User  ID: {user_id}) at {timestamp}"
-                )
-            except Exception as e:
-                print(f"Failed to send message to owner: {e}")
-            return
-
-    # Additional logic for authorized groups can go here
-
-    # Handle authorized users' messages here
-    # Check if the message is a command
-    if message.text.startswith("/"):
-        # If the command is /jl, handle it
-        if message.text.startswith("/rm"):
-            await rm_command(client, message)  # Call the main_func to handle the /jl command
-            return
-
-    # If the user sends any other message, you can choose to ignore it or respond accordingly
-    # await message.reply("Welcome to the group! How can I assist you?")
-
-@app.on_chat_member_updated()
-async def handle_chat_member_update(client, chat_member_update):
-    # Check if the bot was added to a group
-    if chat_member_update.new_chat_member.status == "member" and chat_member_update.new_chat_member.user.is_bot:
-        # Send a message to the owner that the bot has been added to a new group
-        await app.send_message(
-            chat_id=Config.OWNER_ID,
-            text=f"The bot has been added to a new group: {chat_member_update.chat.title} (ID: {chat_member_update.chat.id})"
-        )
-
-@app.on_message((filters.private | filters.group) & filters.command("rm"))
+@app.on_message(filters.command("rm"))
+@sudo_only
 async def rm_command(client, message):
     global user_requests, user_file_count, user_metadata_sent, user_files, user_styles, c_msg
     args = message.command[1:]  # Get command arguments
@@ -437,7 +352,5 @@ async def done_command(client, message):
 
     else:
         print("You have not initiated a file processing request. Please use /rm to start.")
-
-
 
 app.run()
