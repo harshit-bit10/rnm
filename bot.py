@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 API_ID = os.environ.get("API_ID", "29234663")
 API_HASH = os.environ.get("API_HASH", "94235bdf61b1b42e67b113b031db5ba5")
-BOT_TOKEN = "6302807884:AAHGJbJimD2eoEWRPlws4VtASTysIr8Rzk0"  # Your Bot Token as a string
+BOT_TOKEN = "6302807884:AAETHl7yU0eN9xNd8l-v9oz5K5831Vab49E"  # Your Bot Token as a string
 
 app = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
