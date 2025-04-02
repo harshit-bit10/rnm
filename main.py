@@ -169,7 +169,7 @@ async def handle_chat_member_update(client, chat_member_update):
             text=f"The bot has been added to a new group: {chat_member_update.chat.title} (ID: {chat_member_update.chat.id})"
         )
 
-@app.on_message(filters.command("rm"))
+@app.on_message((filters.private | filters.group) & filters.command("rm"))
 async def rm_command(client, message):
     global user_requests, user_file_count, user_metadata_sent, user_files, user_styles, c_msg
     args = message.command[1:]  # Get command arguments
